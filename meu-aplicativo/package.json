@@ -1,0 +1,36 @@
+{
+    "name": "meu-aplicativo",
+    "version": "1.0.0",
+    "description": "Um aplicativo Electron simples",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron .",
+      "build": "electron-builder"
+    },
+    "author": "Seu Nome",
+    "license": "MIT",
+    "dependencies": {
+      "electron": "^16.0.0"
+    },
+    "devDependencies": {
+      "electron-builder": "^22.13.1"
+    },
+    "build": {
+      "appId": "com.example.meu-aplicativo",
+      "productName": "Ordem de Serviço",
+      "directories": {
+        "output": "dist"
+      },
+      "files": [
+        "main.js",
+        "index.html",
+        "renderer.js",
+        "assets/**/*" 
+      ],
+      "win": {
+        "target": "portable",
+        "icon": "caminho/para/seu/icon.ico"
+      }
+    }
+  }
+  

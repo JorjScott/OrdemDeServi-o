@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Ordem de Serviço</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Adicionado para espaço acima do formulário */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input, textarea, button {
+            width: calc(100% - 22px); /* Considerando a largura do padding e da borda */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box; /* Para incluir o padding e a borda na largura total */
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador de Ordem de Serviço</h1>
+        <form id="osForm">
+            <fieldset>
+                <legend>Informações do Cliente</legend>
+                <label for="clientName">Nome do Cliente:</label>
+                <input type="text" id="clientName" required>
+                <label for="clientAddress">Endereço:</label>
+                <input type="text" id="clientAddress" required>
+                <label for="clientPhone">Telefone:</label>
+                <input type="tel" id="clientPhone" required>
+                <label for="clientEmail">Email:</label>
+                <input type="email" id="clientEmail" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Dados do Equipamento</legend>
+                <label for="equipmentType">Tipo de Equipamento:</label>
+                <input type="text" id="equipmentType" required>
+                <label for="equipmentBrand">Marca:</label>
+                <input type="text" id="equipmentBrand" required>
+                <label for="equipmentModel">Modelo:</label>
+                <input type="text" id="equipmentModel" required>
+                <label for="equipmentSerial">Número de Série:</label>
+                <input type="text" id="equipmentSerial" required>
+                <label for="purchaseDate">Data de Aquisição:</label>
+                <input type="date" id="purchaseDate">
+                <label for="warranty">Garantia (válida até):</label>
+                <input type="date" id="warranty">
+            </fieldset>
+
+            <fieldset>
+                <legend>Descrição do Problema</legend>
+                <label for="problemDescription">Descrição do Problema:</label>
+                <textarea id="problemDescription" required></textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>Serviços Solicitados</legend>
+                <label for="servicesRequested">Serviços Solicitados:</label>
+                <textarea id="servicesRequested" required></textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>Orçamento</legend>
+                <label for="estimatedCost">Custo Estimado:</label>
+                <input type="number" id="estimatedCost" required>
+            </fieldset>
+
+            <button type="button" onclick="generatePDF()">Gerar PDF</button>
+        </form>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        function generatePDF() {
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+            const clientPhone = document.getElementById('clientPhone').value;
+            const clientEmail = document.getElementById('clientEmail').value;
+            
+            const equipmentType = document.getElementById('equipmentType').value;
+            const equipmentBrand = document.getElementById('equipmentBrand').value;
+            const equipmentModel = document.getElementById('equipmentModel').value;
+            const equipmentSerial = document.getElementById('equipmentSerial').value;
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const warranty = document.getElementById('warranty').value;
+            
+            const problemDescription = document.getElementById('problemDescription').value;
+            const servicesRequested = document.getElementById('servicesRequested').value;
+            const estimatedCost = document.getElementById('estimatedCost').value;
+
+            const doc = new jsPDF();
+
+            doc.setFont('Roboto');
+            doc.setFontSize(18);
+            doc.text('Ordem de Serviço', 105, 15, null, null, 'center');
+            
+            doc.setFontSize(14);
+            doc.text('Informações do Cliente', 10, 30);
+            doc.setFontSize(12);
+            doc.text(`Nome: ${clientName}`, 10, 40);
+            doc.text(`Endereço: ${clientAddress}`, 10, 50);
+            doc.text(`Telefone: ${clientPhone}`, 10, 60);
+            doc.text(`Email: ${clientEmail}`, 10, 70);
+            
+            doc.setFontSize(14);
+            doc.text('Dados do Equipamento', 10, 85);
+            doc.setFontSize(12);
+            doc.text(`Tipo: ${equipmentType}`, 10, 95);
+            doc.text(`Marca: ${equipmentBrand}`, 10, 105);
+            doc.text(`Modelo: ${equipmentModel}`, 10, 115);
+            doc.text(`Número de Série: ${equipmentSerial}`, 10, 125);
+            doc.text(`Data de Aquisição: ${purchaseDate}`, 10, 135);
+            doc.text(`Garantia: ${warranty}`, 10, 145);
+            
+            doc.setFontSize(14);
+            doc.text('Descrição do Problema', 10, 160);
+            doc.setFontSize(12);
+            doc.text(problemDescription, 10, 170, { maxWidth: 190 });
+            
+            doc.setFontSize(14);
+            doc.text('Serviços Solicitados', 10, 195);
+            doc.setFontSize(12);
+            doc.text(servicesRequested, 10, 205, { maxWidth: 190 });
+            
+            doc.setFontSize(14);
+            doc.text('Orçamento', 10, 230);
+            doc.setFontSize(12);
+            doc.text(`Custo Estimado: R$${estimatedCost}`, 10, 240);
+            
+            doc.save(`ordem_de_servico_${clientName}.pdf`);
+
+        }
+    </script>
+</body>
+</html>
