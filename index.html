@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #383a38;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,17 +16,17 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
+            max-width: 700px;
+            padding: 30px;
+            background: #1d1b1b;
+            border-radius: 90px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             margin-top: 20px; /* Adicionado para espaço acima do formulário */
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
         }
 
         form {
@@ -36,14 +36,14 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: #ffffff;
         }
 
         input, textarea, button {
             width: calc(100% - 22px); /* Considerando a largura do padding e da borda */
             padding: 10px;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #ffffff;
             border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box; /* Para incluir o padding e a borda na largura total */
@@ -56,7 +56,7 @@
 
         button {
             width: 100%;
-            background: #007bff;
+            background: #ff0000;
             color: #fff;
             border: none;
             cursor: pointer;
@@ -68,6 +68,9 @@
 
         button:hover {
             background: #0056b3;
+        }
+        legend{
+            color: rgb(255, 255, 255);
         }
     </style>
 </head>
@@ -126,68 +129,108 @@
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <script>
         const { jsPDF } = window.jspdf;
-
+    
         function generatePDF() {
             const clientName = document.getElementById('clientName').value;
             const clientAddress = document.getElementById('clientAddress').value;
             const clientPhone = document.getElementById('clientPhone').value;
             const clientEmail = document.getElementById('clientEmail').value;
-            
+    
             const equipmentType = document.getElementById('equipmentType').value;
             const equipmentBrand = document.getElementById('equipmentBrand').value;
             const equipmentModel = document.getElementById('equipmentModel').value;
             const equipmentSerial = document.getElementById('equipmentSerial').value;
             const purchaseDate = document.getElementById('purchaseDate').value;
             const warranty = document.getElementById('warranty').value;
-            
+    
             const problemDescription = document.getElementById('problemDescription').value;
             const servicesRequested = document.getElementById('servicesRequested').value;
             const estimatedCost = document.getElementById('estimatedCost').value;
-
+    
             const doc = new jsPDF();
-
-            doc.setFont('Roboto');
+    
+            // Título
             doc.setFontSize(18);
-            doc.text('Ordem de Serviço', 105, 15, null, null, 'center');
-            
+            doc.text('Ordem de Serviço', 105, 20, null, null, 'center');
+    
+            // Informações do Cliente
             doc.setFontSize(14);
             doc.text('Informações do Cliente', 10, 30);
-            doc.setFontSize(12);
-            doc.text(`Nome: ${clientName}`, 10, 40);
-            doc.text(`Endereço: ${clientAddress}`, 10, 50);
-            doc.text(`Telefone: ${clientPhone}`, 10, 60);
-            doc.text(`Email: ${clientEmail}`, 10, 70);
             
+            doc.setFontSize(12);
+            doc.autoTable({
+                startY: 35,
+                head: [['Campo', 'Informação']],
+                body: [
+                    ['Nome', clientName],
+                    ['Endereço', clientAddress],
+                    ['Telefone', clientPhone],
+                    ['Email', clientEmail]
+                ]
+            });
+    
+            // Dados do Equipamento
             doc.setFontSize(14);
-            doc.text('Dados do Equipamento', 10, 85);
-            doc.setFontSize(12);
-            doc.text(`Tipo: ${equipmentType}`, 10, 95);
-            doc.text(`Marca: ${equipmentBrand}`, 10, 105);
-            doc.text(`Modelo: ${equipmentModel}`, 10, 115);
-            doc.text(`Número de Série: ${equipmentSerial}`, 10, 125);
-            doc.text(`Data de Aquisição: ${purchaseDate}`, 10, 135);
-            doc.text(`Garantia: ${warranty}`, 10, 145);
+            doc.text('Dados do Equipamento', 10, doc.autoTable.previous.finalY + 10);
             
+            doc.setFontSize(12);
+            doc.autoTable({
+                startY: doc.autoTable.previous.finalY + 15,
+                head: [['Campo', 'Informação']],
+                body: [
+                    ['Tipo', equipmentType],
+                    ['Marca', equipmentBrand],
+                    ['Modelo', equipmentModel],
+                    ['Número de Série', equipmentSerial],
+                    ['Data de Aquisição', purchaseDate],
+                    ['Garantia', warranty]
+                ]
+            });
+    
+            // Descrição do Problema
             doc.setFontSize(14);
-            doc.text('Descrição do Problema', 10, 160);
-            doc.setFontSize(12);
-            doc.text(problemDescription, 10, 170, { maxWidth: 190 });
+            doc.text('Descrição do Problema', 10, doc.autoTable.previous.finalY + 10);
             
+            doc.setFontSize(12);
+            doc.autoTable({
+                startY: doc.autoTable.previous.finalY + 15,
+                body: [
+                    [{ content: problemDescription, colSpan: 2 }]
+                ]
+            });
+    
+            // Serviços Solicitados
             doc.setFontSize(14);
-            doc.text('Serviços Solicitados', 10, 195);
-            doc.setFontSize(12);
-            doc.text(servicesRequested, 10, 205, { maxWidth: 190 });
+            doc.text('Serviços Solicitados', 10, doc.autoTable.previous.finalY + 10);
             
+            doc.setFontSize(12);
+            doc.autoTable({
+                startY: doc.autoTable.previous.finalY + 15,
+                body: [
+                    [{ content: servicesRequested, colSpan: 2 }]
+                ]
+            });
+    
+            // Orçamento
             doc.setFontSize(14);
-            doc.text('Orçamento', 10, 230);
-            doc.setFontSize(12);
-            doc.text(`Custo Estimado: R$${estimatedCost}`, 10, 240);
+            doc.text('Orçamento', 10, doc.autoTable.previous.finalY + 10);
             
+            doc.setFontSize(12);
+            doc.autoTable({
+                startY: doc.autoTable.previous.finalY + 15,
+                body: [
+                    ['Custo Estimado', `R$${estimatedCost}`]
+                ]
+            });
+    
+            // Salvar PDF
             doc.save(`ordem_de_servico_${clientName}.pdf`);
-
         }
     </script>
+    
 </body>
 </html>
